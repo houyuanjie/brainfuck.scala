@@ -1,8 +1,3 @@
-package icu.harx
-
-import scala.collection.mutable
-import scala.io.StdIn
-
 /*
  * Brainfuck 的 Scala 实现
  * 作者: houyuanjie@github.com
@@ -10,6 +5,10 @@ import scala.io.StdIn
  * http://peter-braun.org/2012/07/brainfuck-interpreter-in-40-lines-of-scala/
  * 使用栈操作代替了原方案中技巧性的循环
  */
+package icu.harx
+
+import scala.collection.mutable
+import scala.io.StdIn
 
 @main def run =
   val code =
@@ -31,7 +30,7 @@ object brainfuck:
     // 跳过, 此时 code(pc) == '[' && data(counter) == 0 跳至对应 ']'
     def jump_over(_pc: Int) =
       var pc    = _pc + 1
-      val stack = mutable.Stack[Int](_pc)
+      val stack = mutable.Stack(_pc)
 
       while !stack.isEmpty do
         code(pc) match
@@ -46,9 +45,9 @@ object brainfuck:
     // 跳回, 此时 code(pc) == ']' && data(counter) == 0 跳至对应 '['
     def jump_back(_pc: Int) =
       var pc    = _pc - 1
-      val stack = mutable.Stack[Int](_pc)
+      val stack = mutable.Stack(_pc)
 
-      while (!stack.isEmpty) do
+      while !stack.isEmpty do
         code(pc) match
           case '[' => stack.pop()
           case ']' => stack.push(pc)
