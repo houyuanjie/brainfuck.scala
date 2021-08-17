@@ -6,4 +6,4 @@
 
 参考了 [Brainfuck Interpreter in 40 lines of Scala -- Veröffentlicht](http://peter-braun.org/2012/07/brainfuck-interpreter-in-40-lines-of-scala/)
 
-使用栈操作代替了原方案中技巧性的循环
+拆分了原方案中技巧性的循环
