@@ -1,10 +1,10 @@
 /*
- * Brainfuck 的 Scala 实现
- * 作者: houyuanjie@github.com
- * 参考了 Brainfuck Interpreter in 40 lines of Scala -- Veröffentlicht
+ * Scala implementation of Brainfuck
+ * Ref: Brainfuck Interpreter in 40 lines of Scala -- Veröffentlicht
  * http://peter-braun.org/2012/07/brainfuck-interpreter-in-40-lines-of-scala/
- * 拆分了原方案中技巧性的循环
+ * Split the tricky loop in the original implementation
  */
+
 package icu.harx
 
 import scala.io.StdIn
@@ -27,7 +27,13 @@ object brainfuck:
     var counter = 0
     var pc      = 0 // program counter
 
-    def jump_over(_pc: Int) =
+    /** jump over codes inside [ ]
+      * @param _pc
+      *   pc @ '[' When data(counter) == 0
+      * @return
+      *   pc @ pairing ']'
+      */
+    def jump_over(_pc: Int): Int =
       var pc       = _pc + 1
       var unpaired = 1
 
@@ -36,12 +42,20 @@ object brainfuck:
           case '[' => unpaired += 1
           case ']' => unpaired -= 1
           case _   =>
+
         pc += 1
+      end while
 
       pc
     end jump_over
 
-    def jump_back(_pc: Int) =
+    /** jump back from ']' to pairing '['
+      * @param _pc
+      *   pc @ ']' When data(counter) != 0
+      * @return
+      *   pc @ pairing '['
+      */
+    def jump_back(_pc: Int): Int =
       var pc       = _pc - 1
       var unpaired = 1
 
@@ -50,27 +64,31 @@ object brainfuck:
           case '[' => unpaired -= 1
           case ']' => unpaired += 1
           case _   =>
+
         pc -= 1
+      end while
 
       pc
     end jump_back
 
     while pc < code.length do
       code(pc) match
+        // addressing
         case '>' => counter += 1
         case '<' => counter -= 1
-
+        // read & write
         case '+' => data(counter) += 1
         case '-' => data(counter) -= 1
-
+        // io
         case ',' => data(counter) = StdIn.readChar()
         case '.' => printf("%c", data(counter))
-
+        // jump
         case '[' => if data(counter) == 0 then pc = jump_over(pc)
         case ']' => if data(counter) != 0 then pc = jump_back(pc)
-
+        // error
         case _ => throw MatchError(s"Unknown Instruction @ $pc")
-      end match
+
+      // next instruction
       pc += 1
     end while
 
