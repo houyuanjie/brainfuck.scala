@@ -9,16 +9,6 @@ package icu.harx
 
 import scala.io.StdIn
 
-@main def run =
-  val code =
-    "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."
-      .toCharArray()
-
-  val bf = brainfuck(8)(code)
-
-  println(s"\ndata: ${bf.foldLeft("")((s, n) => s + s"{$n}")}")
-end run
-
 object brainfuck:
   def apply(bits: Int)(code: Array[Char]): Array[Int] =
     apply { Array.fill(bits)(0) }(code)
@@ -42,12 +32,9 @@ object brainfuck:
           case '[' => unpaired += 1
           case ']' => unpaired -= 1
           case _   =>
-
         pc += 1
-      end while
 
       pc
-    end jump_over
 
     /** jump back from ']' to pairing '['
       * @param _pc
@@ -64,12 +51,9 @@ object brainfuck:
           case '[' => unpaired -= 1
           case ']' => unpaired += 1
           case _   =>
-
         pc -= 1
-      end while
 
       pc
-    end jump_back
 
     while pc < code.length do
       code(pc) match
@@ -87,11 +71,7 @@ object brainfuck:
         case ']' => if data(counter) != 0 then pc = jump_back(pc)
         // error
         case _ => throw MatchError(s"Unknown Instruction @ $pc")
-
       // next instruction
       pc += 1
-    end while
 
     data
-  end apply
-end brainfuck
